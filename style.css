@@ -4,18 +4,19 @@
 body {
     font-family: 'Raleway', sans-serif;
     line-height: 1.6;
-    background-color: #D3CBBF; /* Muted, slightly darker beige */
-    color: #3D352A; /* Dark, warm brown */
+    background-color: #D3CBBF;
+    color: #3D352A;
     display: flex;
     justify-content: center;
     padding: 20px;
     min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .app-container {
     width: 100%;
     max-width: 1400px;
-    background-color: #F7F1E9; /* Creamy off-white paper */
+    background-color: #F7F1E9;
     border-radius: 10px;
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15), 0 0 0 8px rgba(61, 53, 42, 0.08);
     overflow: hidden;
@@ -26,11 +27,11 @@ body {
 
 /* --- Header & Footer --- */
 .app-header {
-    background-color: #4a4033; /* Deep Brown */
+    background-color: #4a4033;
     color: #F7F1E9;
     padding: 25px 35px;
     text-align: center;
-    border-bottom: 4px solid #9A8B7A; /* Muted brass/bronze */
+    border-bottom: 4px solid #9A8B7A;
 }
 .app-header h1 {
     font-family: 'Playfair Display', serif;
@@ -47,7 +48,7 @@ body {
     font-weight: 400;
 }
 .app-footer {
-    background-color: #EFE7DD; /* Lighter cream */
+    background-color: #EFE7DD;
     color: #5c5042;
     font-size: 0.9em;
     padding: 18px 35px;
@@ -59,30 +60,29 @@ body {
 /* --- Main App Body Layout --- */
 .app-body {
     display: flex;
-    flex: 1; /* Allow body to fill remaining space */
+    flex: 1;
     padding: 25px;
     gap: 25px;
-    overflow-y: auto; /* Allow scrolling if content exceeds viewport */
+    overflow-y: auto;
 }
-.main-content-column { /* Camera + Output Strip + Download Button */
-    flex: 2; /* Takes more space */
+.main-content-column {
+    flex: 2;
     display: flex;
     flex-direction: column;
     gap: 25px;
-    min-width: 320px;
+    min-width: 0; /* Allow shrinking */
 }
-.sidebar-column { /* All Controls */
-    flex: 1; /* Takes less space */
+.sidebar-column {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    /* No gap here, panel manages its own content */
-    min-width: 300px;
+    min-width: 0; /* Allow shrinking */
 }
 
 /* --- Panels --- */
 .panel {
     padding: 25px;
-    background-color: #FFFDF9; /* Very light cream, almost white */
+    background-color: #FFFDF9;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     border: 1px solid #EAE0D5;
@@ -90,10 +90,8 @@ body {
     flex-direction: column;
 }
 .camera-panel { align-items: center; }
-.output-panel { flex-grow: 1; /* Output panel can grow to fill space if camera is short */ }
-.controls-panel { flex-grow: 1; /* Allow controls panel to take available space for its content */ }
-
-
+.output-panel { flex-grow: 1; display: flex; flex-direction: column; }
+.controls-panel { flex-grow: 1; }
 .panel-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.9em;
@@ -112,11 +110,16 @@ body {
     margin-bottom: 20px;
     border-radius: 6px;
     overflow: hidden;
-    border: 6px solid #5c5042; /* Darker, substantial frame */
+    border: 6px solid #5c5042;
     background-color: #222;
     box-shadow: inset 0 0 12px rgba(0,0,0,0.35);
+    line-height: 0;
 }
-#video-feed { display: block; width: 100%; height: auto; }
+#video-feed {
+    display: block;
+    width: 100%;
+    height: auto;
+}
 #countdown-message {
     margin-top: 15px; font-weight: 600; color: #826C56;
     min-height: 1.5em; font-size: 1.1em; font-family: 'Courier Prime', monospace;
@@ -161,13 +164,11 @@ body {
 .btn-edit:hover { background-color: #D3CBBF; }
 
 .download-section-wrapper {
-    /* This is now part of main-content-column */
-    /* No specific margin-top: auto; needed here, as it follows the output panel */
-    /* The gap from main-content-column will apply */
+    /* Intentionally empty - positioned by flex gap in parent */
 }
 .download-section-wrapper .btn-secondary {
-     max-width: 340px; 
-     margin-left: auto; 
+     max-width: 340px;
+     margin-left: auto;
      margin-right: auto;
 }
 
@@ -253,6 +254,7 @@ body {
     background-color: #fff; border-bottom: 10px solid #3D352A;
     overflow: hidden; cursor: pointer; transition: box-shadow 0.2s;
     flex-shrink: 0; position: relative;
+    width: 100%;
 }
 .photo-frame.active-photo-edit::after {
     content: ''; position: absolute;
@@ -261,14 +263,24 @@ body {
     pointer-events: none;
 }
 .photo-frame:last-child { border-bottom: none; }
+
 .photo-frame img {
-    display: block; width: 100%; max-width: 200px;
-    height: auto; aspect-ratio: 4/3; object-fit: cover;
+    display: block;
+    width: 100%;
+    max-width: 200px; /* Default max width */
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
     user-select: none; -webkit-user-drag: none;
+    margin-left: auto;
+    margin-right: auto;
 }
+
+/* Layout Variations */
 .photo-strip.layout-horizontal { flex-direction: row; }
-.photo-strip.layout-horizontal .photo-frame { border-bottom: none; border-right: 10px solid #3D352A; }
-.photo-strip.layout-horizontal .photo-frame:last-child { border-right: none; }
+.photo-strip.layout-horizontal .photo-frame { border-bottom: none; border-right: 10px solid #3D352A; width: auto; }
+.photo-strip.layout-horizontal .photo-frame img { max-width: 180px; }
+
 .photo-strip.layout-grid2xN {
     display: grid; grid-template-columns: repeat(2, 1fr);
     gap: 10px; background-color: transparent; padding: 0;
@@ -277,16 +289,18 @@ body {
     border-bottom: none; border-radius: 4px;
     box-shadow: 0 3px 6px rgba(61, 53, 42, 0.15);
 }
+.photo-strip.layout-grid2xN .photo-frame img { max-width: 100%; }
 
-/* Filters (CSS classes for video preview) */
+
+/* Filters (CSS classes for video preview) - Match data-css-class values */
 .filter-none { filter: none; }
-.filter-grayscale { filter: grayscale(100%); }
+.filter-classic-grayscale { filter: grayscale(100%); }
 .filter-soft-grayscale { filter: grayscale(100%) contrast(80%) brightness(105%); }
 .filter-dramatic-shadows-b-w { filter: grayscale(100%) contrast(160%) brightness(90%); }
 .filter-matte-b-w { filter: grayscale(100%) brightness(110%) contrast(90%); }
 .filter-high-key-b-w { filter: grayscale(100%) brightness(130%) contrast(70%); }
 .filter-low-key-b-w { filter: grayscale(100%) brightness(70%) contrast(140%); }
-.filter-sepia { filter: sepia(100%); }
+.filter-vintage-sepia { filter: sepia(100%); }
 .filter-noir-film { filter: contrast(150%) brightness(90%) grayscale(100%); }
 .filter-silver-gelatin { filter: grayscale(100%) contrast(120%) brightness(110%); }
 .filter-tinted-b-w { filter: grayscale(100%) sepia(30%) contrast(110%); }
@@ -298,8 +312,9 @@ body {
 .filter-negative { filter: invert(100%); }
 .filter-faded-glory { filter: saturate(30%); }
 .filter-punchy { filter: contrast(130%); }
-.filter-lomo { filter: brightness(100%) saturate(100%) hue-rotate(90deg) contrast(120%);}
+.filter-lomo { filter: brightness(100%) saturate(100%) hue-rotate(90deg) contrast(120%); }
 .filter-technicolor { filter: brightness(110%) contrast(110%) saturate(150%) hue-rotate(-10deg); }
+
 
 /* --- Responsive Adjustments --- */
 @media (max-width: 1000px) {
@@ -307,36 +322,49 @@ body {
         flex-direction: column; /* Stack main columns */
     }
     /* Order for small screens: Camera -> Controls -> Output -> Download */
-    /* .main-content-column itself doesn't need an order if it's the first flex item in a column flow */
-    /* Instead, we order its children and the sidebar */
     .main-content-column .camera-panel { order: 1; } /* Camera is first */
-    .sidebar-column.order-on-small-controls { order: 2; } /* Then controls (class from HTML) */
+    .sidebar-column.order-on-small-controls { order: 2; } /* Then controls */
     .main-content-column .output-panel { order: 3; } /* Then output */
     .main-content-column .download-section-wrapper { order: 4; margin-top: 20px; } /* Then download */
 
-
     .main-content-column, .sidebar-column {
-        flex: none; 
+        flex: none;
         width: 100%;
+        min-width: unset; /* Override min-width */
     }
     .output-panel { min-height: 250px; }
+    .photo-frame img { max-width: 180px; }
+    .photo-strip.layout-grid2xN .photo-frame img { max-width: 100%; }
 }
+
 @media (max-width: 600px) {
     body { padding: 10px 5px; }
     .app-container { border-radius: 0; min-height: 100vh; box-shadow: none; border: none; }
-    .app-header h1 { font-size: 2em; }
-    .app-header .tagline { font-size: 0.9em; }
-    .app-body { padding: 15px; gap: 15px; }
+    .app-header h1 { font-size: 1.8em; }
+    .app-header .tagline { font-size: 0.85em; }
+    .app-body { padding: 10px; gap: 15px; }
     .panel { padding: 15px; }
-    .panel-title { font-size: 1.5em; margin-bottom: 15px; }
-    .btn { padding: 10px 18px; font-size: 0.9em; }
-    .photo-frame img { max-width: 140px; }
-    #capture-sticker-palette, #edit-sticker-palette {
-        grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-        max-height: 110px;
+    .panel-title { font-size: 1.4em; margin-bottom: 12px; }
+    .btn { padding: 10px 15px; font-size: 0.85em; }
+
+    /* Photo frame and image sizing for really small screens */
+    .photo-strip.layout-vertical .photo-frame,
+    .photo-strip.layout-horizontal .photo-frame {
+        max-width: 140px; /* Even smaller */
+        margin-left: auto;
+        margin-right: auto;
     }
-    .emoji-sticker { font-size: 22px; }
-    .control-group label { font-size: 0.8em; }
-    .control-heading { font-size: 1.1em; }
-    .control-subheading { font-size: 1em; }
+     .photo-frame img {
+        max-width: 100%;
+    }
+
+    #capture-sticker-palette, #edit-sticker-palette {
+        grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+        max-height: 100px;
+    }
+    .emoji-sticker { font-size: 20px; }
+    .control-group label { font-size: 0.75em; }
+    .control-heading { font-size: 1em; }
+    .control-subheading { font-size: 0.95em; }
+    .video-wrapper { border-width: 4px; }
 }
