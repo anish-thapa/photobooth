@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="favii.png">
+    <title>Artisan Snap Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,600&family=Raleway:wght@400;600&family=Courier+Prime&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favii.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Artisan Snap Studio</h1>
+            <p class="tagline">Craft Your Memories, Frame by Frame.</p>
+        </header>
+
+        <div class="app-body">
+            <main class="main-content-column">
+                <section class="panel camera-panel"> <!-- Will be order 1 on mobile -->
+                    <h2 class="panel-title">The Viewfinder</h2>
+                    <div class="video-wrapper">
+                        <video id="video-feed" autoplay playsinline></video>
+                    </div>
+                    <canvas id="capture-canvas" style="display: none;"></canvas>
+                    <button id="capture-button" class="btn btn-primary">Capture Sequence</button>
+                    <p id="countdown-message"></p>
+                </section>
+
+                <section class="panel output-panel"> <!-- Will be order 3 on mobile -->
+                    <h2 class="panel-title">Developed Strip</h2>
+                    <div class="output-gallery-wrapper">
+                        <div class="output-gallery" id="output-gallery">
+                            <div class="photo-strip" id="photo-strip">
+                                <!-- Captured photos appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="download-section-wrapper"> <!-- Will be order 4 on mobile -->
+                     <button id="download-collage-button" class="btn btn-secondary">Download Final Strip</button>
+                </div>
+            </main>
+
+            <aside class="sidebar-column order-on-small-controls"> <!-- Will be order 2 on mobile -->
+                <div class="panel controls-panel">
+                    <h2 class="panel-title">Studio Controls</h2>
+
+                    <div class="control-section" id="capture-settings-section">
+                        <h3 class="control-heading">Capture Settings</h3>
+                        <div class="control-group">
+                            <label for="capture-filter-select">Initial Filter:</label>
+                            <select id="capture-filter-select">
+                                <option value="none">Natural Color</option>
+                                <option value="grayscale(100%)">Classic Grayscale</option>
+                                <option value="grayscale(100%) contrast(80%) brightness(105%)">Soft Grayscale</option>
+                                <option value="grayscale(100%) contrast(160%) brightness(90%)">Dramatic Shadows B&W</option>
+                                <option value="grayscale(100%) brightness(110%) contrast(90%)">Matte B&W</option>
+                                <option value="grayscale(100%) brightness(130%) contrast(70%)">High Key B&W</option>
+                                <option value="grayscale(100%) brightness(70%) contrast(140%)">Low Key B&W</option>
+                                <option value="sepia(100%)">Vintage Sepia</option>
+                                <option value="contrast(150%) brightness(90%) grayscale(100%)">Noir Film</option>
+                                <option value="grayscale(100%) contrast(120%) brightness(110%)">Silver Gelatin</option>
+                                <option value="grayscale(100%) sepia(30%) contrast(110%)">Tinted B&W</option>
+                                <option value="brightness(120%) saturate(130%)">Vivid Pop</option>
+                                <option value="hue-rotate(20deg) saturate(80%)">Warm Tone</option>
+                                <option value="hue-rotate(-30deg) saturate(110%) contrast(110%)">Cool Film</option>
+                                <option value="blur(1px) saturate(70%) brightness(95%)">Dreamy Haze</option>
+                                <option value="brightness(90%) contrast(110%) saturate(60%)">Muted Vintage</option>
+                                <option value="invert(100%)">Negative</option>
+                                <option value="saturate(30%)">Faded Glory</option>
+                                <option value="contrast(130%)">Punchy</option>
+                                <option value="brightness(100%) saturate(100%) hue-rotate(90deg) contrast(120%)">Lomo</option>
+                                <option value="brightness(110%) contrast(110%) saturate(150%) hue-rotate(-10deg)">Technicolor</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="num-pictures">Number of Snaps (1-6):</label>
+                            <input type="number" id="num-pictures" value="4" min="1" max="6">
+                        </div>
+                        <h4 class="control-subheading">Default Sticker for Capture:</h4>
+                        <div class="control-group">
+                            <label for="capture-sticker-palette-emoji">Emoji for Capture:</label>
+                            <div id="capture-sticker-palette">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="capture-sticker-position-select">Position for Capture:</label>
+                            <select id="capture-sticker-position-select">
+                                <option value="none">No Default Sticker</option>
+                                <option value="top-left">Top Left</option>
+                                <option value="top-right">Top Right</option>
+                                <option value="bottom-left">Bottom Left</option>
+                                <option value="bottom-right">Bottom Right</option>
+                                <option value="center">Center</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-section" id="edit-photo-section" style="display: none;">
+                        <h3 class="control-heading">Edit Selected Photo</h3>
+                        <div class="control-group">
+                            <label for="edit-filter-select">Apply New Filter:</label>
+                            <select id="edit-filter-select">
+                            </select>
+                        </div>
+                        <h4 class="control-subheading">Change Sticker:</h4>
+                        <div class="control-group">
+                            <label for="edit-sticker-palette-emoji">New Emoji:</label>
+                            <div id="edit-sticker-palette">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="edit-sticker-position-select">New Position:</label>
+                            <select id="edit-sticker-position-select">
+                                <option value="none">No Emoji / Remove</option>
+                                <option value="top-left">Top Left</option>
+                                <option value="top-right">Top Right</option>
+                                <option value="bottom-left">Bottom Left</option>
+                                <option value="bottom-right">Bottom Right</option>
+                                <option value="center">Center</option>
+                            </select>
+                        </div>
+                        <button id="clear-edits-button" class="btn btn-edit">Revert Photo Edits</button>
+                    </div>
+
+                    <div class="control-section" id="strip-settings-section">
+                        <h3 class="control-heading">Strip Finishing</h3>
+                        <div class="control-group">
+                            <label for="collage-layout-select">Strip Layout:</label>
+                            <select id="collage-layout-select">
+                                <option value="vertical">Vertical Classic</option>
+                                <option value="horizontal">Horizontal Reel</option>
+                                <option value="grid2xN">2-Up Grid</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="collage-bg-color">Strip Background:</label>
+                            <input type="color" id="collage-bg-color" value="#EAE0D5">
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="app-footer">
+            <p>© <span id="year"></span> Artisan Snap Studio</p>
+            <p>Made with ❤️ by Anish Thapa</p>
+        </footer>
+        
+    </div>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+      </script>
+      
+</body>
+</html>
